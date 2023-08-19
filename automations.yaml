@@ -1,0 +1,390 @@
+- id: '1647201637953'
+  alias: Fråga MQTT om status vid omstart
+  description: ''
+  trigger:
+  - platform: homeassistant
+    event: start
+  condition: []
+  action:
+  - service: mqtt.publish
+    data:
+      topic: sonoffs/cmnd/state
+  mode: single
+- id: '1647202126834'
+  alias: Tänd renhorn vid solnedgång
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:30:00
+  condition: []
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.renhorn
+  mode: single
+- id: '1647202175219'
+  alias: Släck renhorn vid soluppgång
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 00:30:00
+  condition: []
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.renhorn
+  mode: single
+- id: '1647375809481'
+  alias: Släck lampor 22:00
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition: []
+  action:
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.natt
+  mode: single
+- id: '1647376130173'
+  alias: Sveas bollar morgon vardag
+  description: ''
+  trigger:
+  - platform: time
+    at: 06:00:00
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.bollar
+  mode: single
+- id: '1647376190552'
+  alias: Sveas bollar morgon helg
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition:
+  - condition: time
+    weekday:
+    - sun
+    - sat
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.bollar
+  mode: single
+- id: '1647806400382'
+  alias: Tänd kvällslampor vid solnedgång
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -0:30:00
+  condition: []
+  action:
+  - service: scene.turn_on
+    data:
+      transition: 15
+    target:
+      entity_id: scene.kvall
+  mode: single
+- id: '1651158313502'
+  alias: Scenario dag kl 9:00
+  description: ''
+  trigger:
+  - platform: time
+    at: 09:00:00
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.dag
+    metadata: {}
+  mode: single
+- id: '1651515849632'
+  alias: Certificate Expiration
+  description: ''
+  use_blueprint:
+    path: bkbilly/certificate-expiration.yaml
+    input:
+      certificate_input: sensor.cert_expiry_timestamp_ha_familjenekdahl_com
+      notify_device: 90d1be50d7a3b936f331fd811b81bfda
+      device_message: SSL certifikatet utgår om {{ expire_days_var }} dagar
+- id: '1675019438593'
+  alias: släck barnens lampor kväll
+  description: ''
+  trigger:
+  - platform: time
+    at: '18:30:00'
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 44e47ddb9b2b2caa4e74130789b624a7
+    entity_id: light.sveas_fonster
+    domain: light
+  - type: turn_off
+    device_id: ee9fe21240344831fd34b8bee3c73fe6
+    entity_id: switch.vidars_fonster_aktiverad
+    domain: switch
+  mode: single
+- id: '1681238896566'
+  alias: Uppdaterat mögelindex krypgrund
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.mould_risk_krypgrund
+    to:
+  condition: []
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      title: Förändrat mögelindex Krypgrund
+      message: '{{ states.sensor.template_mould_text_krypgrund.state }}'
+  mode: single
+- id: '1681239443452'
+  alias: Uppdaterat mögelindex vind
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.mould_risk_vind
+    to:
+  condition: []
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      title: Förändrat mögelindex Vind
+      message: '{{ states.sensor.template_mould_text_vind.state }}'
+  mode: single
+- id: '1681755399257'
+  alias: Starta om sonoff om otillgänglig
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.sonoff1
+    - switch.sonoff2
+    - switch.sonoff3
+    - switch.sonoff4
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  condition: []
+  action:
+  - service: shell_command.reset_sonoff_1
+    data: {}
+  - service: shell_command.reset_sonoff_2
+    data: {}
+  - service: shell_command.reset_sonoff_3
+    data: {}
+  - service: shell_command.reset_sonoff_4
+    data: {}
+  mode: single
+- id: '1687377684210'
+  alias: Tänd hönslampa
+  description: ''
+  trigger:
+  - platform: time
+    at: '21:00:00'
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 9cbdcc6d8a01b2ee5e349d5e8411d771
+    entity_id: switch.single_switch_socket_1
+    domain: switch
+  mode: single
+- id: '1687377723956'
+  alias: Stäng av hönslampa
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:30:00'
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 9cbdcc6d8a01b2ee5e349d5e8411d771
+    entity_id: switch.single_switch_socket_1
+    domain: switch
+  mode: single
+- id: '1688584850181'
+  alias: Påminnelse bevattningspump 20 min
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.torkskap
+    from:
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      message: Pumpen har varit igång i 20 min.
+      title: Bevattningspump
+      data:
+        actions:
+        - action: TURN_OFF_PUMP
+          title: Stäng av
+          icon: sfsymbols:poweroff
+  - service: notify.mobile_app_linnea_iphone
+    data:
+      message: Pumpen har varit igång i 20 min.
+      title: Bevattningspump
+      data:
+        actions:
+        - action: TURN_OFF_PUMP
+          title: Stäng av
+          icon: sfsymbols:poweroff
+  mode: single
+- id: '1688585545081'
+  alias: Stäng av pump genom actionable notification
+  description: ''
+  trigger:
+  - platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: TURN_OFF_PUMP
+  condition: []
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      message: Stänger av bevattningspump
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.torkskap
+  mode: single
+- id: '1688587074895'
+  alias: Påminnelse bevattningspump 40 min
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.torkskap
+    from:
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 40
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      message: Pumpen har varit igång i 40 min.
+      title: Bevattningspump
+      data:
+        actions:
+        - action: TURN_OFF_PUMP
+          title: Stäng av
+          icon: sfsymbols:poweroff
+  - service: notify.mobile_app_linnea_iphone
+    data:
+      message: Pumpen har varit igång i 40 min.
+      title: Bevattningspump
+      data:
+        actions:
+        - action: TURN_OFF_PUMP
+          title: Stäng av
+          icon: sfsymbols:poweroff
+  mode: single
+- id: '1690034035098'
+  alias: 'Gräs: Slå på morgon'
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.torkskap
+  mode: single
+- id: '1690034208771'
+  alias: 'Gräs: Slå av morgon'
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:10:00
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.torkskap
+  mode: single
+- id: '1690034252507'
+  alias: 'Gräs: Slå av lunch'
+  description: ''
+  trigger:
+  - platform: time
+    at: '13:10:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.torkskap
+  mode: single
+- id: '1690034292028'
+  alias: 'Gräs: Slå av kväll'
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:10:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.torkskap
+  mode: single
+- id: '1690034364958'
+  alias: 'Gräs: Slå på lunch'
+  description: ''
+  trigger:
+  - platform: time
+    at: '13:00:00'
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.torkskap
+  mode: single
+- id: '1690034392304'
+  alias: 'Gräs: Slå på kväll'
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.torkskap
+  mode: single

@@ -1,0 +1,489 @@
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: Energi
+    card_mod:
+      style:
+        .: |
+          @media screen and (min-width: 1200px) {
+            :host .content {
+              width: calc(385px + 385px + 385px);
+              max-width: 90vw;
+            }
+          }
+        layout-card:
+          $grid-layout:
+            $:
+              hui-entities-card:
+                $: |
+                  .card-content {
+                    padding: var(--card-content-padding);
+                    padding-bottom: 0.8em;
+                  }
+                  ha-card {
+                    border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+                    border-radius: 0;
+                    transition: none;
+                    letter-spacing: normal;
+                  }
+                  /* portrait */
+                  @media screen and (max-width: 1200px) {
+                    ha-card {
+                      border-right: none;
+                      border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
+                    }
+                  }
+                $hui-horizontal-stack-card:
+                  $: |
+                    #root {
+                      justify-content: space-evenly;
+                      margin-top: 1.7em;
+                      max-width: 82vw; /* iphonex */
+                    }
+    content:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 385px 385px 385px
+        grid-template-rows: 1fr
+        grid-template-areas: |
+          "price consumption nas"
+        mediaquery:
+          #portrait
+          "(max-width: 1200px)":
+            grid-template-columns: 1fr
+            grid-template-rows: repeat(3, 1fr)
+            grid-template-areas: |
+              "price"
+              "consumption"
+              "nas"
+      cards:
+
+        #################################################
+        #                                               #
+        #                HOME ASSISTANT                 #
+        #                                               #
+        #################################################
+
+        - type: entities
+          view_layout:
+            grid-area: price
+          title: Pris
+          show_header_toggle: false
+          card_mod:
+            class: header
+          entities:
+            - entity: sensor.electricity_price_ringstorp_banedal_1
+              name: Nuvarande pris
+
+            - entity: sensor.accumulated_cost_ringstorp_banedal_1
+              name: Kostnad idag
+
+            - entity: sensor.monthly_cost_ringstorp_banedal_1
+              name: Månadskostnad
+              
+
+            - type: custom:bar-card
+              width: 55%
+              height: 2em
+              decimal: 0
+              unit_of_measurement: '%'
+              positions: &bar_card_positions
+                icon: outside
+                indicator: 'off'
+                name: outside
+              severity: &bar_card_severity
+                - color: '#6d2525'
+                  from: 90
+                  to: 999
+              entity_row: true
+              entities:
+
+                - entity: sensor.docker_k8s_ix_chart_homeassistant_ix_chart_76f69c9f95_vvrgk_ix_homeassistant_7cbcbf01_16e9_41b2_9287_af94314947e1_0_1cpu
+                  name: Processor
+                  icon: mdi:chip
+
+                - entity: sensor.docker_k8s_ix_chart_homeassistant_ix_chart_76f69c9f95_vvrgk_ix_homeassistant_7cbcbf01_16e9_41b2_9287_af94314947e1_0_memory_percent
+                  name: Minne
+                  icon: mdi:memory
+
+          footer:
+            type: 'custom:apexcharts-card'
+            graph_span: 2d
+            header:
+              title: Elpris
+              show: true
+              show_states: true
+              colorize_states: true
+            span:
+              start: day
+            yaxis:
+              - min: ~0
+                apex_config:
+                  forceNiceScale: true
+            now:
+              show: true
+              color: '#ffc0cb'
+              label: Nu
+            locale: sv
+            
+            series:
+              - entity: sensor.nordpool_kwh_se3_sek_0_10_025
+                name: Spotpris
+                data_generator: >
+                  return entity.attributes.raw_today.map((entry) => { return [new
+                  Date(entry.start), entry.value]; });
+                show:
+                  extremas: true
+                  in_header: raw
+                  name_in_header: true
+                  offset_in_name: false
+                  header_color_threshold: true
+              - entity: sensor.nordpool_kwh_se3_sek_0_10_025
+                name: Imorgon
+                data_generator: >
+                  return entity.attributes.raw_tomorrow.map((entry) => { return [new
+                  Date(entry.start), entry.value]; });
+                show:
+                  in_header: false
+                  extremas: true
+                color: '#7D70BA'
+            locale: sv
+            apex_config:
+              legend:
+                show: false
+              xaxis:
+                labels:
+                  format: HH
+                  show: true
+                  rotate: -45
+                  rotateAlways: true
+                  hideOverlappingLabels: true
+                  style:
+                    fontSize: 10
+                    fontWeight: 10
+            experimental:
+              color_threshold: true
+            all_series_config:
+              offset: '-1ns'
+              type: column
+              float_precision: 2
+              stroke_width: 7
+              color_threshold:
+                - value: -100
+                  color: '#a9cce3'
+                - value: 0
+                  color: '#27ae60'
+                - value: 50
+                  color: '#82e0aa'
+                - value: 100
+                  color: '#f7dc6f'
+                - value: 200
+                  color: '#f8c471'
+                - value: 250
+                  color: '#f0b27a'
+                - value: 300
+                  color: '#d35400'
+                - value: 350
+                  color: '#cd6155'
+                - value: 400
+                  color: '#e74c3c'
+              # - entity: sensor.nordpool_kwh_se3_sek_0_10_025
+              #   name: Idag
+                
+              #   data_generator: |
+              #     return entity.attributes.raw_today.map((start, index) => {
+              #       return [new Date(start["start"]).getTime(), entity.attributes.raw_today[index]["value"]];
+              #     });
+              # - entity: sensor.nordpool_kwh_se3_sek_0_10_025
+              #   name: Imorgon
+        
+              #   opacity: 0.5
+              #   data_generator: |
+              #     return entity.attributes.raw_tomorrow.map((start, index) => {
+              #       return [new Date(start["start"]).getTime(), entity.attributes.raw_tomorrow[index]["value"]];
+              #     });
+            apex_config:
+              yaxis:
+                min: 0
+              legend:
+                show: false
+                floating: true
+                offsetY: 25
+            
+            # - type: custom:hui-horizontal-stack-card
+            #   cards:  
+            #     - type: custom:button-card
+            #       name: Serveromstart
+            #       icon: mdi:reload
+            #       tap_action:
+            #         services: |
+            #           [[[
+            #             return `[[[
+            #               hass.callService('browser_mod', 'toast', {
+            #                 message: 'Startar om Home Assistant...'
+            #               });
+            #               hass.callService('homeassistant', 'restart');
+            #             ]]]`
+            #           ]]]
+            #       template: icon_name
+
+            #     - type: custom:button-card
+            #       name: Container
+            #       icon: mdi:reload
+            #       tap_action:
+            #         action: call-service
+            #         service: script.turn_on
+            #         service_data:
+            #           entity_id: script.homeassistant_restart
+            #       template: icon_name
+
+        #################################################
+        #                                               #
+        #                    DOCKER                     #
+        #                                               #
+        #################################################
+
+        - type: entities
+          view_layout:
+            grid-area: consumption
+          title: Förbrukning
+          state_color: true
+          show_header_toggle: false
+          card_mod:
+            class: header
+          entities:
+
+          # - entity: sensor.power_ringstorp_banedal_1
+          #     name: Nuvarande förbrukning
+
+          # - entity: sensor.current_l1_ringstorp_banedal_1
+          #     name: Fas 1
+
+            # - type: custom:bar-card
+            #   width: 55%
+            #   height: 2em
+            #   decimal: 0
+            #   unit_of_measurement: '%'
+            #   positions: *bar_card_positions
+            #   severity: *bar_card_severity
+            #   entity_row: true
+            #   entities:
+
+            #     - entity: sensor.docker_1cpu
+            #       name: Processor
+
+            #     - entity: sensor.docker_memory_percent
+            #       name: Minne
+
+            - entity: sensor.docker_containers_total
+              name: Containrar Totalt
+
+            - entity: sensor.docker_containers_running
+              name: Containrar Körs
+
+            - entity: sensor.docker_containers_paused
+              name: Containrar Pausade
+
+            - entity: sensor.docker_containers_stopped
+              name: Containrar Stoppade
+
+
+          # footer:
+          #   type: 'custom:apexcharts-card'
+          #   graph_span: 48h
+          #   header:
+          #     title: Elpris
+          #     show: true
+          #   span:
+          #     start: day
+          #   now:
+          #     show: true
+          #     label: Nu
+          #   series:
+          #     - entity: sensor.nordpool_kwh_se3_sek_0_10_025
+          #       name: Idag
+          #       type: column
+          #       data_generator: |
+          #         return entity.attributes.raw_today.map((start, index) => {
+          #           return [new Date(start["start"]).getTime(), entity.attributes.raw_today[index]["value"]];
+          #         });
+          #     - entity: sensor.nordpool_kwh_se3_sek_0_10_025
+          #       name: Imorgon
+          #       opacity: 0.5
+          #       data_generator: |
+          #         return entity.attributes.raw_tomorrow.map((start, index) => {
+          #           return [new Date(start["start"]).getTime(), entity.attributes.raw_tomorrow[index]["value"]];
+          #         });
+          #   type: custom:apexcharts-card
+          #   layout: minimal
+          #   graph_span: 1h
+          #   locale: se
+          #   apex_config:
+          #     chart:
+          #       fontFamily: var(--primary-font-family)
+          #       height: 135px
+          #     tooltip:
+          #       style:
+          #         fontSize: 14px
+          #       x:
+          #         show: true
+          #         format: dddd HH:mm
+          #     xaxis:
+          #       crosshairs:
+          #         show: false
+          #     legend:
+          #       fontSize: 14px
+          #       fontWeight: 400
+          #       itemMargin:
+          #         horizontal: 25
+          #       formatter: |
+          #         EVAL: (seriesName, opts) => {
+          #           var arr = opts.w.globals.series[opts.seriesIndex],
+          #             value = arr[arr.length - 1],
+          #             convert = (value/1024).toFixed(2);
+          #           return value == null
+          #             ? seriesName : value < 1024 ? `${Math.round(value)} kB/s`
+          #             : `${convert} MB/s`;
+          #         }
+          #       markers:
+          #         width: 26
+          #         height: 23
+          #         customHTML:
+          #           - 'EVAL:() => {return `<ha-icon icon="mdi:arrow-down-bold" style="--mdc-icon-size: 23px;"></ha-icon>`}'
+          #           - 'EVAL:() => {return `<ha-icon icon="mdi:arrow-up-bold" style="--mdc-icon-size: 23px;"></ha-icon>`}'
+          #         fillColors:
+          #           - none
+          #           - none
+          #     fill:
+          #       type: gradient
+          #       gradient:
+          #         type: vertical
+          #         opacityFrom: 0.8
+          #         opacityTo: 0
+          #         stops:
+          #           - 0
+          #           - 99
+          #           - 100
+          #     stroke:
+          #       width: 3
+          #   all_series_config:
+          #     type: area
+          #     fill_raw: last
+          #   series:
+          #     - entity: sensor.nas_network_down
+          #       name: Ned
+          #       color: green
+          #     - entity: sensor.nas_network_up
+          #       name: Upp
+          #       color: '#385581'
+
+        #################################################
+        #                                               #
+        #                      NAS                      #
+        #                                               #
+        #################################################
+
+        - type: entities
+          view_layout:
+            grid-area: nas
+          title: TrueNAS
+          show_header_toggle: false
+          card_mod:
+            class: header
+            style: |
+              ha-card {
+                border: none !important;
+              }
+          entities:
+            - entity: binary_sensor.truenas_hdd_healthy
+              attribute: Status
+
+            # - entity: binary_sensor.nas_security_status
+            #   name: Säkerhetsstatus
+
+            - entity: sensor.truenas_temperature
+              name: Temperatur
+
+            - entity: sensor.truenas_uptime
+              name: Senast omstart
+
+            # - entity: binary_sensor.nas_update_available
+            #   name: Uppdatering
+
+            - type: custom:bar-card
+              width: 55%
+              height: 2em
+              decimal: 0
+              unit_of_measurement: '%'
+              positions: *bar_card_positions
+              severity: *bar_card_severity
+              entity_row: true
+              entities:
+
+                - entity: sensor.truenas_cpu_usage
+                  name: Processor
+                  tap_action:
+                    action: call-service
+                    service: homeassistant.update_entity
+                    service_data:
+                      entity_id: sensor.truenas_cpu_usage
+
+                # - entity: sensor.memory_use_percent
+                #   name: Minne - 4GB
+                #   tap_action:
+                #     action: call-service
+                #     service: homeassistant.update_entity
+                #     service_data:
+                #       entity_id: sensor.memory_use_percent
+
+            - type: custom:bar-card
+              width: 55%
+              height: 2em
+              decimal: 0
+              unit_of_measurement: 'GiB'
+              positions: *bar_card_positions
+              severity: *bar_card_severity
+              max: 1765
+              entity_row: true
+              entities:
+
+                - entity: sensor.truenas_hdd_free
+                  name: "Ledigt utrymme"
+                  tap_action:
+                    action: call-service
+                    service: homeassistant.update_entity
+                    service_data:
+                      entity_id: sensor.truenas_hdd
+            # - type: custom:hui-horizontal-stack-card
+            #   cards:
+            #     - type: custom:button-card
+            #       name: Starta om
+            #       icon: mdi:restart-alert
+            #       tap_action:
+            #         confirm: >
+            #           [[[
+            #             return `[[[
+            #               if (window.confirm('Är du säker på att du vill starta om NAS?')) {
+            #                 hass.callService('browser_mod', 'toast', { message: 'Startar om NAS...', duration: 3000 });
+            #                 hass.callService('button', 'press', { entity_id: 'button.nas_reboot' });
+            #               }
+            #             ]]]`
+            #           ]]]
+            #       template: icon_name
+
+            #     - type: custom:button-card
+            #       name: Stäng av...
+            #       icon: mdi:alert
+            #       tap_action:
+            #         confirm: >
+            #           [[[
+            #             return `[[[
+            #               if (window.confirm('Är du säker på att du vill stänga av NAS?')) {
+            #                 hass.callService('browser_mod', 'toast', { message: 'Stänger av NAS...', duration: 3000 });
+            #                 hass.callService('button', 'press', { entity_id: 'button.nas_shutdown' });
+            #               }
+            #             ]]]`
+            #           ]]]
+            #       template: icon_name

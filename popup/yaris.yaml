@@ -1,0 +1,45 @@
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: Motorvärmare Yaris
+    style:
+      .: |
+        :host .content {
+          width: 100%;
+        }
+      hui-grid-card:
+        $: |
+          button-card:nth-child(2),
+          button-card:nth-child(4) {
+            margin: 0.6em 0 2.1em 0.8em;
+          }
+          button-card:nth-child(6) {
+            margin: 0.6em 0 0.5em 0.8em;
+          }
+          #root {
+            grid-gap: 0 !important;
+            padding: var(--card-content-padding);
+            width: max-content;
+          }
+    card:
+      type: grid
+      columns: 1
+      square: false
+      cards:                  
+        - type: entities
+          state_color: true
+          show_header_toggle: false
+          card_mod:
+            class: header
+          entities:
+            - entity: input_datetime.car_heater2_departure_time
+              name: Avfärd
+            - type: section
+            - entity: input_boolean.car_heater2_enable
+              icon: mdi:radiator
+            - entity: input_boolean.car_heater2_weekday
+            - type: section
+            - entity: sensor.car_heater2_start_time
+
+        

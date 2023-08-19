@@ -1,0 +1,212 @@
+  - sensor:
+      - unique_id: sidebar
+        state: template
+        attributes:
+          time: >
+            {% set hours = now().strftime('%H') %}
+            {% set minutes = now().strftime('%M') %}
+            <span class="time">
+              {{ hours }}<span class="time-colon">:</span>{{ minutes }}
+            </span>
+          date: >
+            <font color='#6a7377'><b>
+            {% if strptime(states('sensor.date'), '%Y-%m-%d').day != null %}
+            {% set days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] %}
+            {% set months = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
+            'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'] %}
+              {{ days[now().weekday()] }}<br>
+              {{ strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ months[now().month-1] }}
+            {% endif %}
+            </b></font>
+          greet: >
+            <b>
+            {% set time = now().hour %}
+            {% if time <= 1 %} God natt {{'\U0001F611'}}
+            {% elif time <= 3 %} God natt {{'\U0001F62A'}}
+            {% elif time <= 5 %} God natt {{'\U0001F634'}}
+            {% elif time <= 7 %} God morgon {{'\U0001F4A9'}}
+            {% elif time <= 9 %} God morgon {{'\u2615\uFE0F'}}
+            {% elif time <= 10 %} God morgon {{'\U0001F642'}}
+            {% elif time <= 13 %} God dag {{'\U0001F60A'}}
+            {% elif time <= 15 %} God dag {{'\U0001F60E'}}
+            {% elif time <= 17 %} God dag {{'\U0001F44B\U0001F3FB'}}
+            {% elif time <= 19 %} God kväll {{'\U0001F44B\U0001F3FB'}}
+            {% elif time <= 22 %} God kväll {{'\U0001F60C'}}
+            {% elif time <= 23 %} God kväll {{'\U0001F974'}}
+            {% else %} God kväll {{'\U0001F974'}}
+            {% endif %}
+            </b>
+          active: >
+            <b>
+            {% set lights = [
+              states.light.group_vardagsrumsfonster,
+              states.light.renhorn,
+              states.light.huvudentre,
+              states.light.groventre,
+              states.light.group_garageportslampor,
+              states.light.julslinga,
+              states.light.sveas_fonster,
+              states.light.bollar,
+              states.light.vidars_fonster,
+              states.light.fonsterlampa_kok,
+              states.light.fonsterlampa,
+              states.light.floalt_panel
+            ] %}
+
+            {% set switches = [
+              states.switch.single_switch_socket_1,
+              states.switch.torkskap
+            ] %}
+
+            {% set media_players = [
+              states.media_player.vardagsrum
+            ] %}
+
+            {% set lights_on = lights | selectattr('state','eq','on') | list %}
+            {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+
+            {% set switches_on = switches | selectattr('state','eq','on') | list %}
+            {% set media_players_playing = media_players | selectattr('state','eq','playing') | list %}
+            {% set append = switches_on + media_players_playing %}
+            {% set switches_name = append | map(attribute='name') | join(', ') %}
+
+            {% if (lights_on | length == 0) and (switches_on | length > 0) %}
+              {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+            {% elif (lights_on | length == 1) and (switches_on | length == 1) %}
+              {{ lights_name }} och {{switches_name }} är på
+
+            {% elif (lights_on | length == 1) and (switches_on | length > 1) %}
+              {{ lights_name }}, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+            {% elif (lights_on | length > 1) and (switches_on | length == 1) %}
+              {{ lights_on | length }} lampor och {{ switches_name }} är på
+
+            {% elif (lights_on | length > 1) and (switches_on | length > 1) %}
+              {{ lights_on | length }} lampor, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+            {% elif (lights_on | length == 1) and (switches_on | length == 0) %}
+              {{ lights_name }} är på
+
+            {% elif (lights_on | length > 1) and (switches_on | length == 0) %}
+              {{ lights_on | length }} lampor är på
+
+            {% else %}
+              <font color='#6a7377'>Allt är avstängt</font>
+            {% endif %}
+            </b>
+          mailbox: >
+            {% set mailbox = states('sensor.mailbox') %}
+            {% if mailbox | int(default=0) > 0 %}
+              {{ '\U0001F4EC' }} <font color='#6a7377'><b>Brevlåda ({{ mailbox }})</b></font>
+            {% endif %}
+          vacuum: >
+            {% set entity_id = 'vacuum.morty' %}
+            {% if is_state(entity_id, 'cleaning') %}
+              <b>Morty dammsuger</b>
+            {% elif is_state(entity_id, 'returning') %}
+              <b>Morty är färdig</b>
+            {% endif %}
+          weather: >
+            {% set temperature = states('sensor.netatmo_banedal_vardagsrum_utomhus_temperature') %}
+            {% set forecasts = state_attr('weather.smhi_home', 'forecast') %}
+            {% set precip = forecasts[0].precipitation %}
+            {% if not is_state('sensor.netatmo_banedal_vardagsrum_utomhus_temperature', 'unknown') %}              
+              Det är {{ temperature }}°C ute
+              {% if precip | float(default=0) > 0 %}
+                {%if temperature | float(default=0) <= 0.0 %}
+                  Risk för {{ precip }} mm snö
+                {% else %}
+                  Risk för {{ precip }} mm regn
+                {% endif %}
+              {% endif %}  
+            {% else %}
+              Kan inte läsa in väderinformation...
+            {% endif %}
+          post: >
+            {% set next_delivery = [
+              "idag",
+              "i morgon",
+              "i övermorgon",
+              "om tre dagar",
+              "om fyra dagar",
+              "om fem dagar",
+              "om sex dagar",
+              "om en vecka",
+              "om 8 dagar",
+              "om 9 dagar",
+              "om 10 dagar",
+              "om 11 dagar",
+              "om 12 dagar",
+              "om 13 dagar",
+              "om två veckor"
+            ] %}
+            Posten kommer {{ next_delivery[int(states('sensor.mail_delivery_58594'))] }}
+          pollen: >
+            {% set pollen_level = [
+              "Inga halter",
+              "Låga halter",
+              "Låga-måttliga halter",
+              "Måttliga halter",
+              "Måttliga-höga halter",
+              "Höga halter",
+              "Mycket höga halter",
+              "Extrema halter"
+            ] %}
+            {% if has_value('sensor.pollen_norrkoping_bjork') %}
+              {% if int(states('sensor.pollen_norrkoping_bjork')) > 0 and int(states('sensor.pollen_norrkoping_bjork')) < 8 %}
+                {{ pollen_level[int(states('sensor.pollen_norrkoping_bjork'))] }} björkpollen.
+              {% endif %}
+            {% endif %}
+            {% if has_value('sensor.pollen_norrkoping_grabo') %}
+              {% if int(states('sensor.pollen_norrkoping_grabo')) > 0 and int(states('sensor.pollen_norrkoping_grabo')) < 8 %}
+                {{ pollen_level[int(states('sensor.pollen_norrkoping_grabo'))] }} gråbopollen.
+              {% endif %}
+            {% endif %}
+            {% if has_value('sensor.pollen_norrkoping_gras') %}
+              {% if int(states('sensor.pollen_norrkoping_gras')) > 0 and int(states('sensor.pollen_norrkoping_gras')) < 8 %}
+                {{ pollen_level[int(states('sensor.pollen_norrkoping_gras'))] }} gräspollen.
+              {% endif %}
+            {% endif %}
+          auris_heater: >
+            {% if is_state('input_boolean.car_heater_display', 'on') %}
+              {{ states.sensor.car_heater1_status.state }}
+            {% endif %}
+          yaris_heater: >
+            {% if is_state('input_boolean.car_heater_display', 'on') %}
+              {{ states.sensor.car_heater2_status.state }}
+            {% endif %}
+          battery: >
+            {% set entities = states.sensor 
+              | selectattr('entity_id', 'search', 'battery')
+              | rejectattr('entity_id', 'search', 'iphone')
+              | map(attribute = 'entity_id') | list %}
+            {% for sensor in entities if states(sensor) != 'unknown' and states(sensor) !=
+            'unavailable' and states(sensor) != 'None' and states(sensor) | int(default=0) <= 5 %}
+              {% if loop.first %} {{'\u26A0\uFE0F'}} Batteri {% else %}, {% endif %}
+              {{ state_attr(sensor, 'friendly_name') }} {{ states(sensor) }}%
+            {% endfor %}
+          internet: >
+            {% if is_state('binary_sensor.internet_connection', 'off') %}
+              {{'\u26A0\uFE0F'}} Kontrollera internetåtkomsten
+            {% endif %}
+
+      - unique_id: mould_text_krypgrund
+        state: >
+          {% set mogel_index = [
+            "ingen risk för mögel",
+            "möjlig efter mer än 8 veckor",
+            "efter 4-8 veckor",
+            "inom 4 veckor"
+          ] %}
+          {{ mogel_index[int(states('sensor.mould_risk_krypgrund'))] }}
+
+      - unique_id: mould_text_vind
+        state: >
+          {% set mogel_index = [
+            "ingen risk för mögel",
+            "möjlig efter mer än 8 veckor",
+            "efter 4-8 veckor",
+            "inom 4 veckor"
+          ] %}
+          {{ mogel_index[int(states('sensor.mould_risk_vind'))] }}

@@ -1,0 +1,103 @@
+homeassistant:
+  packages: !include_dir_named include #theme
+  allowlist_external_dirs:
+    - "/config"
+  auth_providers:
+    - type: homeassistant
+  customize:
+    sensor.banedal_daily_heat_energy_consumption:
+      state_class: total_increasing
+    sensor.banedal_daily_cool_energy_consumption:
+      state_class: total_increasing
+  
+
+http:
+  server_port: 443
+  ssl_certificate: /config/ssl/cert.pem
+  ssl_key: /config/ssl/key.pem
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+lovelace:
+  mode: storage
+  dashboards:
+    lovelace-yaml:
+      mode: yaml
+      title: Tablet
+      icon: mdi:tablet
+      show_in_sidebar: true
+      filename: ui-lovelace.yaml
+
+logger:
+  default: info
+  logs:
+    custom_components.truenas: debug
+
+ios:
+ 
+sonos:
+  media_player:
+    hosts:
+      - 10.10.20.10
+      - 10.10.20.11
+    advertise_addr: 10.10.10.11
+
+recorder:
+  db_url: !secret db_url
+  purge_keep_days: 180
+  exclude:
+    domains:
+      - automation
+      - updater
+      - input_boolean
+    entity_globs:
+      - sensor.weather_*
+    entities:
+      - sun.sun # Don't record sun data
+      - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+      - sensor.date
+    event_types:
+      - call_service # Don't record service calls
+
+shell_command:
+  reset_sonoff_1: curl "http://10.10.20.110/?rstrt="
+  reset_sonoff_2: curl "http://10.10.20.113/?rstrt="
+  reset_sonoff_3: curl "http://10.10.20.112/?rstrt="
+  reset_sonoff_4: curl "http://10.10.20.111/?rstrt="
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+binary_sensor:
+  - platform: ping
+    host: sunet.se
+    name: "Internet connection"
+    count: 1
+    scan_interval: 30
+    
+
+command_line:
+  - sensor:
+      unique_id: gfdbn5r65467i8
+      name: mould_risk_krypgrund
+      command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.krypgrunden_temperatur")|float }} {{ states("sensor.krypgrunden_luftfuktighet")|float }}'
+      unit_of_measurement: "index"
+      
+  - sensor:
+      unique_id: ghytujtu435
+      name: mould_risk_vind
+      command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.vinden_temperatur_2")|float }} {{ states("sensor.vinden_luftfuktighet_2")|float }}'
+      unit_of_measurement: "index"
+
+
+##########################################
+# Links to individual configuration files
+##########################################
+light: !include lights.yaml
+sensor: !include sensors.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+template: !include templates.yaml
