@@ -1,0 +1,48 @@
+# An * ensures that everything will be ignored.
+.*
+
+# Whitelisting
+!/.github
+!.HA_VERSION
+!*.yaml
+!.gitignore
+!*.md
+
+@eaDir
+
+secrets_template.yaml
+secrets.yaml
+
+# Ignore folders and files
+.storage
+.cloud
+.vscode
+.google.token
+custom_components
+backups
+blueprints
+deps
+dwains-dashboard
+image
+tts
+
+www/community/
+www/fonts/
+www/sound
+www/pollen_img
+ssl
+
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
+
+*.code-workspace
+home-assistant.log*
+home-assistant*.db
+
+
+
+# Ignore folders.
+
+
+# Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
