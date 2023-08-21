@@ -3,26 +3,27 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Uppdateringar
-    style:
-      .: |
-        :host .content {
-          width: 100%;
-        }
-      hui-grid-card:
-        $: |
-          button-card:nth-child(2),
-          button-card:nth-child(4) {
-            margin: 0.6em 0 2.1em 0.8em;
+    card_mod:
+      style:
+        .: |
+          :host .content {
+            width: 100%;
           }
-          button-card:nth-child(6) {
-            margin: 0.6em 0 0.5em 0.8em;
-          }
-          #root {
-            grid-gap: 0 !important;
-            padding: var(--card-content-padding);
-            width: max-content;
-          }
-    card:
+        hui-grid-card:
+          $: |
+            button-card:nth-child(2),
+            button-card:nth-child(4) {
+              margin: 0.6em 0 2.1em 0.8em;
+            }
+            button-card:nth-child(6) {
+              margin: 0.6em 0 0.5em 0.8em;
+            }
+            #root {
+              grid-gap: 0 !important;
+              padding: var(--card-content-padding);
+              width: max-content;
+            }
+    content:
       type: grid
       columns: 1
       square: false

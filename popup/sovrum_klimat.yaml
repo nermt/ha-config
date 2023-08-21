@@ -3,14 +3,15 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Klimat
-    style:
-      hui-vertical-stack-card:
-        $hui-entities-card$ : |
-          #states {
-            padding-top: 0.5em;
-            padding-bottom: 0em;
-          }
-    card:
+    card_mod:
+      style:
+        hui-vertical-stack-card:
+          $hui-entities-card$ : |
+            #states {
+              padding-top: 0.5em;
+              padding-bottom: 0em;
+            }
+    content:
       type: vertical-stack
       cards:
 

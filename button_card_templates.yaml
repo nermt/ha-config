@@ -750,17 +750,18 @@
         service: browser_mod.popup
         data:
           title: HACS
-          style:
-            div: |
-              .content {
-                padding: 0;
-              }
-            hui-iframe-card$: |
-              ha-card {
-                margin-left: -58px;
-              }
-          large: true
-          card:
+          card_mod:
+            style:
+              div: |
+                .content {
+                  padding: 0;
+                }
+              hui-iframe-card$: |
+                ha-card {
+                  margin-left: -58px;
+                }
+            large: true
+          content:
             type: iframe
             url: >
               [[[ return `/${hass.panels.hacs.url_path}` ]]]
@@ -796,7 +797,7 @@
         data:
           title: >
             [[[ return entity === undefined || entity.attributes.friendly_name; ]]]
-          card:
+          content:
             type: custom:light-popup-card
             entity: >
               [[[ return variables.entity_id; ]]]
@@ -844,7 +845,7 @@
                   data:
                     title: >
                       [[[ return entity === undefined || entity.attributes.friendly_name; ]]]
-                    card:
+                    content:
                       type: custom:light-entity-card
                       entity: >
                         [[[ return variables.entity_id; ]]]
