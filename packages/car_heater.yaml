@@ -14,7 +14,7 @@ automation:
         value: '{{ states.sensor.netatmo_banedal_vardagsrum_utomhus_temperature.state }}'
     - event: car_heater1_timer_enabled
 
-    - id: 'car_heater2_on_timer'
+  - id: 'car_heater2_on_timer'
     alias: 'Aktivera Yaris motorvärmartimer'
     trigger:
     - entity_id: input_boolean.car_heater2_enable
