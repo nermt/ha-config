@@ -388,3 +388,25 @@
     target:
       entity_id: switch.torkskap
   mode: single
+- id: '1692713872656'
+  alias: Meddela Låg spänning UPS
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.ups_input_voltage
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    below: 100
+  condition: []
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      message: Ingen inspänning till UPS
+      title: Strömavbrott
+  - service: notify.persistent_notification
+    data:
+      message: Ingen inspänning till UPS
+      title: Strömavbrott
+  mode: single
