@@ -1,5 +1,5 @@
 homeassistant:
-  packages: !include_dir_named include #theme
+  packages: !include_dir_named packages
   allowlist_external_dirs:
     - "/config"
   auth_providers:
@@ -10,6 +10,8 @@ homeassistant:
     sensor.banedal_daily_cool_energy_consumption:
       state_class: total_increasing
   
+frontend:
+  themes: !include_dir_merge_named themes
 
 http:
   server_port: 443
