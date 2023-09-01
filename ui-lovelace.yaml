@@ -327,35 +327,32 @@ views:
             name: >
               <ha-icon icon="mdi:home-thermometer"></ha-icon> Miljö
             tap_action:
-              !include popup/footer/miljo.yaml
+              !include popup/footer_miljo.yaml
             template: footer
 
           - type: custom:button-card
             name: >
               <ha-icon icon="mdi:home-lightning-bolt"></ha-icon> Energi
             tap_action:
-              !include popup/footer/energy.yaml
+              !include popup/footer_energy.yaml
             template: footer
 
           - type: custom:button-card
             name: >
               <ha-icon icon="mdi:seed"></ha-icon> Pollen
             tap_action:
-              !include popup/footer/pollen.yaml
+              !include popup/footer_pollen.yaml
             template: footer
 
           - type: custom:button-card
+            entity: sensor.template_updates
             name: >
-              <ha-icon icon="mdi:radiator"></ha-icon> Uppdatera
+              <ha-icon icon="mdi:arrow-up-bold-circle-outline"></ha-icon> Uppdatera
             tap_action:
-              !include popup/footer/updater.yaml
+              !include popup/footer_updates.yaml
             variables:
               notify: >
                 [[[
-                  let hass_installed = states['sensor.current_version'].state,
-                    hacs = states['sensor.hacs'],
-                    hass_version_latest = states['sensor.docker_hub'].state,
-                    hass_count = hass_installed !== hass_version_latest ? 1 : 0;
-                  return hass_count + parseInt(hacs.state);
+                  return parseInt(entity?.state);
                 ]]]
             template: footer
