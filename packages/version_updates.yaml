@@ -47,10 +47,12 @@ template:
           update_entities: >
             {{ states.update | selectattr('state','eq','on') | list | count }}
           other_updates: >
-            {{ 0 }}
+            {{ states('sensor.template_other_updates') | int(0) }}
 
-      # - unique_id: other_updates
-      #   state: >
+      - unique_id: other_updates
+        state: >
+          {{ 0 }}
+      
       #     {% set ns = namespace(list=[]) %}
       #     {% for k, v in this.attributes | dictsort(by='value') %}
       #       {% set ns.list = ns.list + [v] if v != '' else [] %}
