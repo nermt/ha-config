@@ -3,92 +3,72 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Miljö
+    style: >
+      --popup-max-width: calc(385px + 385px);
+      --ha-card-border-radius: 0;
     card_mod:
       style:
-        .: |
-          @media screen and (min-width: 1200px) {
-            :host .content {
-              width: calc(385px + 385px + 385px);
-              max-width: 90vw;
-            }
-          }
         layout-card:
-          $grid-layout:
-            $:
-              hui-entities-card:
-                $: |
-                  .card-content {
-                    padding: var(--card-content-padding);
-                    padding-bottom: 0.8em;
-                  }
+          $grid-layout$:
+            # card divider border
+            .: |
+              #root {
+                  margin: -24px 0 !important;
+              }
+            hui-entities-card:
+              $: |
+                .card-content {
+                  padding: var(--tablet-popup-content-padding);
+                  padding-bottom: 0.8em;
+                }
+                ha-card {
+                  border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+                  border-radius: 0;
+                  transition: none;
+                }
+                /* portrait */
+                @media screen and (max-width: 1200px) {
                   ha-card {
-                    border-right: 1.5px solid rgba(0, 0, 0, 0.2);
-                    border-radius: 0;
-                    transition: none;
-                    letter-spacing: normal;
+                    border-right: none;
+                    border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
                   }
-                  /* portrait */
-                  @media screen and (max-width: 1200px) {
-                    ha-card {
-                      border-right: none;
-                      border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
-                    }
+                }
+              $hui-horizontal-stack-card:
+                # horizontal bottom buttons
+                $: |
+                  #root {
+                    justify-content: space-evenly;
+                    margin-top: 1.7em;
+                    max-width: 82vw; /* iphonex */
                   }
-                $hui-horizontal-stack-card:
-                  $: |
-                    #root {
-                      justify-content: space-evenly;
-                      margin-top: 1.7em;
-                      max-width: 82vw; /* iphonex */
-                    }
     content:   
       type: custom:layout-card
       layout_type: custom:grid-layout
       layout:
         #default
         margin: 0
-        grid-gap: var(--custom-layout-card-padding)
-        grid-template-columns: repeat(3, 1fr) 0
-        grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
+        grid-gap: 1px
+        grid-template-columns: 220px 220px
+        grid-template-rows: 1fr
         grid-template-areas: |
-          ".  .     .     ."
-          ".  ute   ute   ."
-          ".  v-rum hons  ."
-          ".  vind  kryp  ."
-          ".  .     .     ."
+          "ute   v-rum"
+          "hons  kryp "
+          "vind  .    "
         mediaquery:
-          #phone
-          "(max-width: 800px)":
-            grid-gap: calc(var(--custom-layout-card-padding) * 1.7)
-            grid-template-columns: 0 repeat(2, 1fr) 0
-            grid-template-rows: 0 repeat(5, fit-content(100%)) 0fr
-            grid-template-areas: |
-              ".  .     .     ."
-              ".  ute   ute   ."
-              ".  v-rum hons  ."
-              ".  vind  kryp  ."
-              ".  .     .     ."
           #portrait
-          "(max-width: 1200px)":
-            grid-gap: var(--custom-layout-card-padding)
-            grid-template-columns: repeat(3, 1fr) 0
-            grid-template-rows: 0 repeat(3, fit-content(100%)) 0fr
+          "(max-width: 500px)":
+            grid-template-columns: 1fr
+            grid-template-rows: repeat(5, 1fr)
             grid-template-areas: |
-              ".  .     .     ."
-              ".  ute   ute   ."
-              ".  v-rum hons  ."
-              ".  vind  kryp  ."
-              ".  .     .     ."
+              "ute"
+              "v-rum"
+              "hons"
+              "kryp"
+              "vind"
       cards:
+        
+        ### UTE
 
-        - type: custom:button-card #extra_styles fix
-          styles: {card: [display: none]}
-
-        #################################################
-        #                                               #
-        #                    UTE                        #
-        #                                               #
-        #################################################
         - type: entities
           view_layout:
             grid-area: ute
@@ -98,24 +78,17 @@ browser_mod:
             class: header
           entities:
             - entity: sensor.netatmo_banedal_vardagsrum_utomhus_temperature
-              name: Temperature
+              name: " "
 
             - entity: sensor.netatmo_banedal_vardagsrum_utomhus_humidity
-              name: Luftfuktighet
+              name: " "
+              icon: mdi:water-percent
 
             - entity: sensor.netatmo_banedal_vardagsrum_regnmatare_rain_today
-              name: Regn idag
-              
+              name: " "              
 
+        ### VARDAGSRUM
 
-
-
-        
-        #################################################
-        #                                               #
-        #                    VARDAGSRUM                 #
-        #                                               #
-        #################################################
         - type: entities
           view_layout:
             grid-area: v-rum
@@ -126,16 +99,15 @@ browser_mod:
             class: header
           entities:
             - entity: sensor.netatmo_banedal_vardagsrum_temperature
-              name: Temperature
+              name: " "
 
             - entity: sensor.netatmo_banedal_vardagsrum_humidity
-              name: Luftfuktighet
+              name: " "
+              icon: mdi:water-percent
 
-        #################################################
-        #                                               #
-        #                    HÖNS                       #
-        #                                               #
-        #################################################
+
+        ### HÖNS
+
         - type: entities
           view_layout:
             grid-area: hons
@@ -146,16 +118,14 @@ browser_mod:
             class: header
           entities:
             - entity: sensor.garage_temperatur_temperatur
-              name: Temperature
+              name: " "
 
             - entity: sensor.garage_temperatur_luftfuktighet
-              name: Luftfuktighet
+              name: " "
+              icon: mdi:water-percent
 
-        #################################################
-        #                                               #
-        #                    VIND                       #
-        #                                               #
-        #################################################
+        ### VIND
+
         - type: entities
           view_layout:
             grid-area: vind
@@ -166,20 +136,18 @@ browser_mod:
             class: header
           entities:
             - entity: sensor.vinden_temperatur_2
-              name: Temperature
+              name: " "
 
             - entity: sensor.vinden_luftfuktighet_2
-              name: Luftfuktighet
+              name: " "
+              icon: mdi:water-percent
 
             - entity: sensor.template_mould_text_vind
-              name: Mögel
+              name: " "
 
 
-        #################################################
-        #                                               #
-        #                    KRYPGRUND                  #
-        #                                               #
-        #################################################
+        ### KRYPGRUND
+
         - type: entities
           view_layout:
             grid-area: kryp
@@ -190,10 +158,11 @@ browser_mod:
             class: header
           entities:
             - entity: sensor.krypgrunden_temperatur
-              name: Temperature
+              name: " "
 
             - entity: sensor.krypgrunden_luftfuktighet
-              name: Luftfuktighet
+              name: " "
+              icon: mdi:water-percent
 
             - entity: sensor.template_mould_text_krypgrund
-              name: Mögel
+              name: " "
