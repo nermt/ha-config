@@ -39,7 +39,7 @@
       entity_id: light.renhorn
   mode: single
 - id: '1647375809481'
-  alias: Släck lampor 22:00
+  alias: Scenario natt 22:00
   description: ''
   trigger:
   - platform: time
@@ -47,9 +47,9 @@
   condition: []
   action:
   - service: scene.turn_on
-    data: {}
     target:
       entity_id: scene.natt
+    metadata: {}
   mode: single
 - id: '1647376130173'
   alias: Sveas bollar morgon vardag
@@ -89,7 +89,7 @@
       entity_id: light.bollar
   mode: single
 - id: '1647806400382'
-  alias: Tänd kvällslampor vid solnedgång
+  alias: Scenario kväll vid solnedgång
   description: ''
   trigger:
   - platform: sun
@@ -98,10 +98,9 @@
   condition: []
   action:
   - service: scene.turn_on
-    data:
-      transition: 15
     target:
       entity_id: scene.kvall
+    metadata: {}
   mode: single
 - id: '1651158313502'
   alias: Scenario dag kl 9:00
@@ -116,15 +115,6 @@
       entity_id: scene.dag
     metadata: {}
   mode: single
-- id: '1651515849632'
-  alias: Certificate Expiration
-  description: ''
-  use_blueprint:
-    path: bkbilly/certificate-expiration.yaml
-    input:
-      certificate_input: sensor.cert_expiry_timestamp_ha_familjenekdahl_com
-      notify_device: 90d1be50d7a3b936f331fd811b81bfda
-      device_message: SSL certifikatet utgår om {{ expire_days_var }} dagar
 - id: '1675019438593'
   alias: släck barnens lampor kväll
   description: ''
@@ -197,32 +187,6 @@
     data: {}
   - service: shell_command.reset_sonoff_4
     data: {}
-  mode: single
-- id: '1687377684210'
-  alias: Tänd hönslampa
-  description: ''
-  trigger:
-  - platform: time
-    at: '21:00:00'
-  condition: []
-  action:
-  - type: turn_on
-    device_id: 9cbdcc6d8a01b2ee5e349d5e8411d771
-    entity_id: switch.single_switch_socket_1
-    domain: switch
-  mode: single
-- id: '1687377723956'
-  alias: Stäng av hönslampa
-  description: ''
-  trigger:
-  - platform: time
-    at: '22:30:00'
-  condition: []
-  action:
-  - type: turn_off
-    device_id: 9cbdcc6d8a01b2ee5e349d5e8411d771
-    entity_id: switch.single_switch_socket_1
-    domain: switch
   mode: single
 - id: '1688584850181'
   alias: Påminnelse bevattningspump 20 min
