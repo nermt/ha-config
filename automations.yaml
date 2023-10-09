@@ -374,3 +374,18 @@
       message: Ingen inspänning till UPS
       title: Strömavbrott
   mode: single
+- id: '1696842115957'
+  alias: Uppdatera tid för senast ändrade höns temp
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.honsen_temperatur_2
+  condition: []
+  action:
+  - service: input_datetime.set_datetime
+    data:
+      datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
+    target:
+      entity_id: input_datetime.senast_uppdaterad_temperatur_honshus
+  mode: single

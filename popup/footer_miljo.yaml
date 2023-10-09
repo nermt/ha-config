@@ -117,12 +117,11 @@ browser_mod:
           card_mod:
             class: header
           entities:
-            - entity: sensor.garage_temperatur_temperatur
+            - entity: sensor.honshuset_temperatur_2
               name: " "
 
-            - entity: sensor.garage_temperatur_luftfuktighet
+            - entity: sensor.honshuset_luminans_2
               name: " "
-              icon: mdi:water-percent
 
         ### VIND
 
