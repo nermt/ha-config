@@ -287,81 +287,78 @@ views:
       #                                               #
       #################################################
 
-      - type: grid
-        title: Hemma
+      # - type: grid
+      #   title: Hemma
+      #   view_layout:
+      #     grid-area: hemma
+      #   columns: 2
+      #   cards:
+      #     - type: custom:button-card
+      #       entity: climate.banedal_3
+      #       name: Luftvärme
+      #       hold_action:
+      #         !include popup/luftklimat.yaml
+      #       template:
+      #         - base
+      #         - icon_climate
+      #         - circle
+      #       variables:
+      #         circle_input: >
+      #           [[[
+      #             if (entity) {
+      #                 return entity.state === 'cool'
+      #                     ? Math.round(entity.attributes.temperature).toString()
+      #                     : Math.round(entity.attributes.current_temperature).toString();
+      #             }
+      #           ]]]
+      #         circle_input_unit: '°C'
+
+      #     - type: custom:button-card
+      #       entity: climate.forrad
+      #       name: Förråd
+      #       hold_action:
+      #         !include popup/forradklimat.yaml
+      #       template:
+      #         - base
+      #         - icon_climate
+      #         - circle
+      #       variables:
+      #         circle_input: >
+      #           [[[
+      #             if (entity) {
+      #                 return entity.state === 'cool'
+      #                     ? Math.round(entity.attributes.temperature).toString()
+      #                     : Math.round(entity.attributes.current_temperature).toString();
+      #             }
+      #           ]]]
+      #         circle_input_unit: '°C'
+      - type: vertical-stack
+        title: Klimat
         view_layout:
           grid-area: hemma
-        columns: 2
         cards:
-          - type: custom:button-card
+          - type: custom:mushroom-climate-card
             entity: climate.banedal_3
-            name: Luftvärme
-            hold_action:
-              !include popup/luftklimat.yaml
-            template:
-              - base
-              - icon_climate
-              - circle
-            variables:
-              circle_input: >
-                [[[
-                  if (entity) {
-                      return entity.state === 'cool'
-                          ? Math.round(entity.attributes.temperature).toString()
-                          : Math.round(entity.attributes.current_temperature).toString();
-                  }
-                ]]]
-              circle_input_unit: '°C'
+            name: Luftvärmepump
+            icon: mdi:home-thermometer
+            hvac_modes: []
+            show_temperature_control: true
 
-          - type: custom:button-card
+          - type: custom:mushroom-climate-card
             entity: climate.forrad
             name: Förråd
-            hold_action:
-              !include popup/forradklimat.yaml
-            template:
-              - base
-              - icon_climate
-              - circle
-            variables:
-              circle_input: >
-                [[[
-                  if (entity) {
-                      return entity.state === 'cool'
-                          ? Math.round(entity.attributes.temperature).toString()
-                          : Math.round(entity.attributes.current_temperature).toString();
-                  }
-                ]]]
-              circle_input_unit: '°C'
+            icon: mdi:home-thermometer
+            hvac_modes: []
+            show_temperature_control: true
 
           - type: custom:mushroom-climate-card
             entity: climate.garage
             name: Garage
             icon: mdi:home-thermometer
             hvac_modes: []
-            # primary_info: name
-            # secondary_info: state
             show_temperature_control: true
-
-          - type: custom:button-card
-            entity: climate.garage
-            name: Garage
-            hold_action:
-              !include popup/garageklimat.yaml
-            template:
-              - base
-              - icon_climate
-              - circle
-            variables:
-              circle_input: >
-                [[[
-                  if (entity) {
-                      return entity.state === 'cool'
-                          ? Math.round(entity.attributes.temperature).toString()
-                          : Math.round(entity.attributes.current_temperature).toString();
-                  }
-                ]]]
-              circle_input_unit: '°C'
-
+          
+          
       #################################################
       #                                               #
       #                    FOOTER                     #
