@@ -455,13 +455,13 @@
     light.vardagsrumsfonster:
       supported_color_modes:
       - onoff
-      color_mode: onoff
       entity_id:
       - light.fonsterlampa_v
       - light.fonsterlampa_h
       icon: mdi:lightbulb-group
       friendly_name: Vardagsrumsfönster
       supported_features: 0
+      color_mode: onoff
       state: 'on'
     light.garderob_wiz:
       min_color_temp_kelvin: 2702
@@ -538,10 +538,6 @@
       friendly_name: Garageport
       supported_features: 4
       state: 'off'
-    switch.single_switch_socket_1:
-      device_class: outlet
-      friendly_name: Hönslampa
-      state: 'off'
   icon: mdi:weather-sunny
   metadata:
     light.vardagsrumsfonster:
@@ -549,6 +545,4 @@
     light.garderob_wiz:
       entity_only: true
     light.garageport_2:
-      entity_only: true
-    switch.single_switch_socket_1:
       entity_only: true

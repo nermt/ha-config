@@ -380,7 +380,7 @@
   trigger:
   - platform: state
     entity_id:
-    - sensor.honsen_temperatur_2
+    - sensor.honshuset_temperatur_2
   condition: []
   action:
   - service: input_datetime.set_datetime
@@ -388,4 +388,54 @@
       datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
     target:
       entity_id: input_datetime.senast_uppdaterad_temperatur_honshus
+  mode: single
+- id: '1697649932092'
+  alias: Larma vid vatten under diskbänk
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.under_diskbanken_vattenalarm
+    from:
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+  condition: []
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      title: Vattenlarm
+      message: Vatten under diskbänken
+  - service: notify.persistent_notification
+    data:
+      message: Vatten under diskbänken
+      title: Vattenlarm
+  mode: single
+- id: '1698351799743'
+  alias: Tänd hos hönsen 07:00
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.single_switch_socket_1
+  mode: single
+- id: '1698736019247'
+  alias: Starta Nextcloud VM när HA startar
+  description: ''
+  trigger:
+  - platform: homeassistant
+    event: start
+  condition: []
+  action:
+  - service: truenas.vm_start
+    data: {}
+    target:
+      entity_id: binary_sensor.nextcloud_2
   mode: single
