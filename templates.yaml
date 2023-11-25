@@ -39,23 +39,26 @@
           active: >
             <b>
             {% set lights = [
-              states.light.group_vardagsrumsfonster,
+              states.light.vardagsrumsfonster,
               states.light.renhorn,
               states.light.huvudentre,
               states.light.groventre,
-              states.light.group_garageportslampor,
-              states.light.julslinga,
+              states.light.garageport_grupp,
               states.light.sveas_fonster,
               states.light.bollar,
-              states.light.vidars_fonster,
+              states.light.vidar_lampa,
               states.light.fonsterlampa_kok,
-              states.light.fonsterlampa,
-              states.light.floalt_panel
+              states.light.fonsterlampa_tvattstuga,
+              states.light.floalt_panel,
+              states.light.garderob_wiz
             ] %}
 
             {% set switches = [
               states.switch.single_switch_socket_1,
-              states.switch.torkskap
+              states.switch.torkskap,
+              states.switch.meross1_lampa,
+              states.meross1_varmelampa,
+              states.pergola_lampa_brytare
             ] %}
 
             {% set media_players = [
@@ -108,10 +111,10 @@
               <b>Morty är färdig</b>
             {% endif %}
           weather: >
-            {% set temperature = states('sensor.netatmo_banedal_vardagsrum_utomhus_temperature') %}
+            {% set temperature = states('sensor.banedal_outside_temperature') %}
             {% set forecasts = state_attr('weather.smhi_home', 'forecast') %}
             {% set precip = forecasts[0].precipitation %}
-            {% if not is_state('sensor.netatmo_banedal_vardagsrum_utomhus_temperature', 'unknown') %}              
+            {% if not is_state('sensor.banedal_outside_temperature', 'unknown') %}              
               Det är {{ temperature }}°C ute
               {% if precip | float(default=0) > 0 %}
                 {%if temperature | float(default=0) <= 0.0 %}
@@ -182,7 +185,7 @@
               | rejectattr('entity_id', 'search', 'iphone')
               | map(attribute = 'entity_id') | list %}
             {% for sensor in entities if states(sensor) != 'unknown' and states(sensor) !=
-            'unavailable' and states(sensor) != 'None' and states(sensor) | int(default=0) <= 5 %}
+            'unavailable' and states(sensor) != 'None' and states(sensor) | int(default=0) <= 20 %}
               {% if loop.first %} {{'\u26A0\uFE0F'}} Batteri {% else %}, {% endif %}
               {{ state_attr(sensor, 'friendly_name') }} {{ states(sensor) }}%
             {% endfor %}
@@ -191,22 +194,23 @@
               {{'\u26A0\uFE0F'}} Kontrollera internetåtkomsten
             {% endif %}
 
-      - unique_id: mould_text_krypgrund
-        state: >
-          {% set mogel_index = [
-            "ingen risk för mögel",
-            "möjlig efter mer än 8 veckor",
-            "efter 4-8 veckor",
-            "inom 4 veckor"
-          ] %}
-          {{ mogel_index[int(states('sensor.mould_risk_krypgrund'))] }}
+# Turn off mould indicators until sensors are added to the zigbee network
+      # - unique_id: mould_text_krypgrund
+      #   state: >
+      #     {% set mogel_index = [
+      #       "ingen risk för mögel",
+      #       "möjlig efter mer än 8 veckor",
+      #       "efter 4-8 veckor",
+      #       "inom 4 veckor"
+      #     ] %}
+      #     {{ mogel_index[int(states('sensor.mould_risk_krypgrund'))] }}
 
-      - unique_id: mould_text_vind
-        state: >
-          {% set mogel_index = [
-            "ingen risk för mögel",
-            "möjlig efter mer än 8 veckor",
-            "efter 4-8 veckor",
-            "inom 4 veckor"
-          ] %}
-          {{ mogel_index[int(states('sensor.mould_risk_vind'))] }}
+      # - unique_id: mould_text_vind
+      #   state: >
+      #     {% set mogel_index = [
+      #       "ingen risk för mögel",
+      #       "möjlig efter mer än 8 veckor",
+      #       "efter 4-8 veckor",
+      #       "inom 4 veckor"
+      #     ] %}
+      #     {{ mogel_index[int(states('sensor.mould_risk_vind'))] }}
