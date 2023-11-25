@@ -61,5 +61,6 @@ browser_mod:
             - entity: input_boolean.car_heater1_weekday
             - type: section
             - entity: sensor.car_heater1_start_time
-
-        
+            - type: section
+            - entity: switch.dubbla_motorvarmare_socket_1
+              name: Manuell styrning
