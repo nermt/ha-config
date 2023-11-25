@@ -1,0 +1,47 @@
+# sensor:
+#   - platform: command_line
+#     name: Nextcloud HTTP Response Code
+#     command: curl -I https://cloud.familjenekdahl.com/login 2>/dev/null | head -n 1 | cut -d$' ' -f2
+#     scan_interval: 60
+
+# binary_sensor:
+#   - platform: command_line
+#     name: Nextcloud HTTP Response Status
+#     command: response=$(curl -LIk -m 3 https://cloud.familjenekdahl.com/login -o /dev/null -w "%{http_code}\n" -s); test "$response" -eq 200 && echo "OFF" || echo "ON"
+#     scan_interval: 60
+#     value_template: '{{ value }}'
+#     device_class: 'problem'
+
+command_line:
+  - sensor:
+      name: Nextcloud HTTP Response Code
+      command: curl -I https://cloud.familjenekdahl.com/login 2>/dev/null | head -n 1 | cut -d$' ' -f2
+      scan_interval: 60
+  - binary_sensor:
+      name: Nextcloud HTTP Response Status
+      command: response=$(curl -LIk -m 3 https://cloud.familjenekdahl.com/login -o /dev/null -w "%{http_code}\n" -s); test "$response" -eq 200 && echo "OFF" || echo "ON"
+      scan_interval: 60
+      value_template: '{{ value }}'
+      device_class: 'problem'
+
+  - sensor:
+      name: Unifi HTTP Response Code
+      command: curl -I https://unifi.banedal.lan/manage/account/login --insecure 2>/dev/null | head -n 1 | cut -d$' ' -f2
+      scan_interval: 60
+  - binary_sensor:
+      name: Unifi HTTP Response Status
+      command: response=$(curl -LIk -m 3 https://unifi.banedal.lan/manage/account/login --insecure -o /dev/null -w "%{http_code}\n" -s); test "$response" -eq 200 && echo "OFF" || echo "ON"
+      scan_interval: 60
+      value_template: '{{ value }}'
+      device_class: 'problem'
+
+  - sensor:
+      name: IPA HTTP Response Code
+      command: curl -I https://ipa.banedal.lan/ipa/ui/index.html --insecure 2>/dev/null | head -n 1 | cut -d$' ' -f2
+      scan_interval: 60
+  - binary_sensor:
+      name: IPA HTTP Response Status
+      command: response=$(curl -LIk -m 3 https://ipa.banedal.lan/ipa/ui/index.html --insecure -o /dev/null -w "%{http_code}\n" -s); test "$response" -eq 200 && echo "OFF" || echo "ON"
+      scan_interval: 60
+      value_template: '{{ value }}'
+      device_class: 'problem'

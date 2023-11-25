@@ -77,7 +77,7 @@ browser_mod:
           card_mod:
             class: header
           entities:
-            - entity: sensor.netatmo_banedal_vardagsrum_utomhus_temperature
+            - entity: sensor.banedal_outside_temperature
               name: " "
 
             - entity: sensor.netatmo_banedal_vardagsrum_utomhus_humidity
@@ -117,10 +117,13 @@ browser_mod:
           card_mod:
             class: header
           entities:
-            - entity: sensor.honshuset_temperatur_2
+            - entity: sensor.honshuset_temperatur
               name: " "
 
-            - entity: sensor.honshuset_luminans_2
+            - entity: sensor.honshuset_ljusstyrka
+              name: " "
+
+            - entity: sensor.aqara_honsen_temp_luftfuktighet
               name: " "
 
         ### VIND
