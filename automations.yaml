@@ -51,43 +51,6 @@
       entity_id: scene.natt
     metadata: {}
   mode: single
-- id: '1647376130173'
-  alias: Sveas bollar morgon vardag
-  description: ''
-  trigger:
-  - platform: time
-    at: 06:00:00
-  condition:
-  - condition: time
-    weekday:
-    - mon
-    - tue
-    - wed
-    - thu
-    - fri
-  action:
-  - service: light.turn_off
-    data: {}
-    target:
-      entity_id: light.bollar
-  mode: single
-- id: '1647376190552'
-  alias: Sveas bollar morgon helg
-  description: ''
-  trigger:
-  - platform: time
-    at: 07:00:00
-  condition:
-  - condition: time
-    weekday:
-    - sun
-    - sat
-  action:
-  - service: light.turn_off
-    data: {}
-    target:
-      entity_id: light.bollar
-  mode: single
 - id: '1647806400382'
   alias: Scenario kväll vid solnedgång
   description: ''
@@ -114,23 +77,6 @@
     target:
       entity_id: scene.dag
     metadata: {}
-  mode: single
-- id: '1675019438593'
-  alias: släck barnens lampor kväll
-  description: ''
-  trigger:
-  - platform: time
-    at: '18:30:00'
-  condition: []
-  action:
-  - type: turn_off
-    device_id: 44e47ddb9b2b2caa4e74130789b624a7
-    entity_id: light.sveas_fonster
-    domain: light
-  - type: turn_off
-    device_id: ee9fe21240344831fd34b8bee3c73fe6
-    entity_id: switch.vidars_fonster_aktiverad
-    domain: switch
   mode: single
 - id: '1681238896566'
   alias: Uppdaterat mögelindex krypgrund
@@ -169,9 +115,6 @@
   - platform: state
     entity_id:
     - switch.sonoff1
-    - switch.sonoff2
-    - switch.sonoff3
-    - switch.sonoff4
     to: unavailable
     for:
       hours: 0
@@ -395,13 +338,13 @@
   trigger:
   - platform: state
     entity_id:
-    - binary_sensor.under_diskbanken_vattenalarm
+    - binary_sensor.under_banken_fukt
     from:
     to: 'on'
     for:
       hours: 0
       minutes: 0
-      seconds: 5
+      seconds: 0
   condition: []
   action:
   - service: notify.mobile_app_iphone
@@ -424,18 +367,139 @@
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.single_switch_socket_1
+      entity_id: switch.meross1_lampa
   mode: single
 - id: '1698736019247'
-  alias: Starta Nextcloud VM när HA startar
+  alias: Starta Nextcloud VM när cifs startat
   description: ''
   trigger:
-  - platform: homeassistant
-    event: start
-  condition: []
+  - platform: state
+    entity_id:
+    - binary_sensor.cifs
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: binary_sensor.nextcloud_2
+    state: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
   action:
   - service: truenas.vm_start
     data: {}
     target:
       entity_id: binary_sensor.nextcloud_2
   mode: single
+- id: '1699199627146'
+  alias: Släck hos hönsen 20:00
+  description: ''
+  trigger:
+  - platform: time
+    at: '20:00:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.meross1_lampa
+  mode: single
+- id: '1700394061972'
+  alias: Notifiera när utomhussensorn blir otillgänglig
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.netatmo_banedal_vardagsrum_utomhus_temperature
+    from:
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.persistent_notification
+    data:
+      message: Tappade kontakten med Netatmo utomhussensor
+      title: Otillgänglig sensor
+  - service: notify.mobile_app_iphone
+    data:
+      message: Tappade kontakten med Netatmo utomhussensor
+      title: Otillgänglig sensor
+  mode: single
+- id: '1700397332117'
+  alias: Övervaka publik ip
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.myip
+    - sensor.cloud_familjenekdahl_com
+  condition:
+  - condition: template
+    value_template: '{{states(''sensor.cloud_familjenekdahl_com'') != states(''sensor.myip'')}}'
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      message: Publik IP och cloud.familjenekdahl.com stämmer inte överens.
+      title: DNS problem
+  mode: single
+- id: '1700507672337'
+  alias: Tänd hos barnen vid solnedgång
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -0:30:00
+  condition: []
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id:
+      - light.vidar_lampa
+      - light.sveas_fonster
+      - light.bollar
+  mode: single
+- id: '1700507793323'
+  alias: Släck hos barnen 19:00
+  description: ''
+  trigger:
+  - platform: time
+    at: '19:00:00'
+  condition: []
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id:
+      - light.sveas_fonster
+      - light.vidar_lampa
+  mode: single
+- id: '1700923047282'
+  alias: Styr scenatio med IKEA Remote
+  description: ''
+  use_blueprint:
+    path: niro1987/zha_ikea_tradfri_5button_remote_custom.yaml
+    input:
+      remote: e9099621dfcc534d97e28a2330b0a4cf
+      dimdown_short:
+      - service: scene.turn_on
+        target:
+          entity_id: scene.natt
+        metadata: {}
+      dimup_short:
+      - service: scene.turn_on
+        target:
+          entity_id: scene.morgon
+        metadata: {}
+      power_short:
+      - service: light.toggle
+        data: {}
+        target:
+          entity_id: light.vardagsrumsfonster

@@ -133,7 +133,7 @@ views:
               - icon_lamp
 
           - type: custom:button-card
-            entity: light.fonsterlampa
+            entity: light.fonsterlampa_tvattstuga
             name: Tvättstuga
             template:
               - light
@@ -167,8 +167,15 @@ views:
               - icon_closet
 
           - type: custom:button-card
-            entity: light.garageport_2
+            entity: light.garageport_grupp
             name: Garageport
+            template:
+              - light
+              - icon_hue
+
+          - type: custom:button-card
+            entity: switch.single_switch_socket_1
+            name: Hönsgård
             template:
               - light
               - icon_hue
@@ -201,7 +208,7 @@ views:
               - icon_shade
 
           - type: custom:button-card
-            entity: light.vidars_fonster
+            entity: light.vidar_lampa
             name: Vidars fönster
             template:
               - light
@@ -214,7 +221,7 @@ views:
       #################################################
 
       - type: grid
-        title: Motorvärmare
+        title: Värmare
         view_layout:
           grid-area: heater
         columns: 2
@@ -238,6 +245,15 @@ views:
             template:
               - icon_name
 
+          - type: custom:button-card
+            entity: switch.meross1_varmelampa
+            name: Värmelampa
+            template:
+              - light
+              - icon_chickenhouse
+
+          
+
       #################################################
       #                                               #
       #                    ÖVRIGT                     #
@@ -252,8 +268,8 @@ views:
         cards:
 
           - type: custom:button-card
-            entity: switch.single_switch_socket_1
-            name: Hönslampa
+            entity: switch.meross1_lampa
+            name: Hönshuset
             template:
               - light
               - icon_chickenhouse

@@ -21,16 +21,4 @@
   - platform: switch
     name: Huvudentré
     entity_id: switch.huvudentre
-
-  - platform: switch
-    name: Garageport
-    entity_id: switch.garageport_aktiverad
-  
-  - platform: switch
-    name: Uteslinga
-    entity_id: switch.julslinga_aktiverad
-
-  - platform: switch
-    name: Vidars fönster
-    entity_id: switch.vidars_fonster_aktiverad
     

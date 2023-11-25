@@ -78,20 +78,29 @@ binary_sensor:
     name: "Internet connection"
     count: 1
     scan_interval: 30
-    
 
-command_line:
-  - sensor:
-      unique_id: gfdbn5r65467i8
-      name: mould_risk_krypgrund
-      command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.krypgrunden_temperatur")|float }} {{ states("sensor.krypgrunden_luftfuktighet")|float }}'
-      unit_of_measurement: "index"
+zha:
+  zigpy_config:
+    ota:
+      ikea_provider: true                        # Auto update Trådfri devices
+      ledvance_provider: true                    # Auto update LEDVANCE/OSRAM devices
+      salus_provider: true                       # Auto update SALUS/Computime devices
+      inovelli_provider: true                    # Auto update INOVELLI devices
+      thirdreality_provider: true                # Auto update 3REALITY devices 
+
+# Turn off mould indicators until sensors are added to the zigbee network
+# command_line:
+#   - sensor:
+#       unique_id: gfdbn5r65467i8
+#       name: mould_risk_krypgrund
+#       command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.krypgrunden_temperatur")|float }} {{ states("sensor.krypgrunden_luftfuktighet")|float }}'
+#       unit_of_measurement: "index"
       
-  - sensor:
-      unique_id: ghytujtu435
-      name: mould_risk_vind
-      command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.vinden_temperatur_2")|float }} {{ states("sensor.vinden_luftfuktighet_2")|float }}'
-      unit_of_measurement: "index"
+#   - sensor:
+#       unique_id: ghytujtu435
+#       name: mould_risk_vind
+#       command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.vinden_temperatur_2")|float }} {{ states("sensor.vinden_luftfuktighet_2")|float }}'
+#       unit_of_measurement: "index"
 
 
 ##########################################
