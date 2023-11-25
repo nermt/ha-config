@@ -11,7 +11,7 @@ automation:
       data_template:
         entity_id: input_number.car_heater1_3h_before_temp
         # CHANGE-ME: outside temperature sensor
-        value: '{{ states.sensor.netatmo_banedal_vardagsrum_utomhus_temperature.state }}'
+        value: '{{ states.sensor.banedal_outside_temperature.state }}'
     - event: car_heater1_timer_enabled
 
   - id: 'car_heater2_on_timer'
@@ -26,7 +26,7 @@ automation:
       data_template:
         entity_id: input_number.car_heater2_3h_before_temp
         # CHANGE-ME: outside temperature sensor
-        value: '{{ states.sensor.netatmo_banedal_vardagsrum_utomhus_temperature.state }}'
+        value: '{{ states.sensor.banedal_outside_temperature.state }}'
     - event: car_heater2_timer_enabled
 
   - id: 'car_heater1_start_if_needed'
@@ -232,7 +232,7 @@ automation:
       data_template:
         entity_id: input_number.car_heater1_3h_before_temp
         # CHANGE-ME: outside temperature sensor
-        value: '{{ states.sensor.netatmo_banedal_vardagsrum_utomhus_temperature.state }}'
+        value: '{{ states.sensor.banedal_outside_temperature.state }}'
 
   - id: 'car_heater2_temp_sample_3h'
     alias: 'Läs utetemperaturen 3h innan Yaris avfärd'
@@ -265,7 +265,7 @@ automation:
       data_template:
         entity_id: input_number.car_heater2_3h_before_temp
         # CHANGE-ME: outside temperature sensor
-        value: '{{ states.sensor.netatmo_banedal_vardagsrum_utomhus_temperature.state }}'
+        value: '{{ states.sensor.banedal_outside_temperature.state }}'
 
 # Input sensors
 input_datetime:
