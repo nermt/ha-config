@@ -46,3 +46,6 @@ home-assistant*.db
 
 
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
+zigbee.db-wal
+zigbee.db
+zigbee.db-shm
