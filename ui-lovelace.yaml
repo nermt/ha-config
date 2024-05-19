@@ -174,7 +174,7 @@ views:
               - icon_hue
 
           - type: custom:button-card
-            entity: switch.single_switch_socket_1
+            entity: light.honsgard
             name: Hönsgård
             template:
               - light

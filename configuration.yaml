@@ -89,19 +89,23 @@ zha:
       thirdreality_provider: true                # Auto update 3REALITY devices 
 
 # Turn off mould indicators until sensors are added to the zigbee network
-# command_line:
+command_line:
 #   - sensor:
 #       unique_id: gfdbn5r65467i8
 #       name: mould_risk_krypgrund
 #       command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.krypgrunden_temperatur")|float }} {{ states("sensor.krypgrunden_luftfuktighet")|float }}'
 #       unit_of_measurement: "index"
       
-#   - sensor:
-#       unique_id: ghytujtu435
-#       name: mould_risk_vind
-#       command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.vinden_temperatur_2")|float }} {{ states("sensor.vinden_luftfuktighet_2")|float }}'
-#       unit_of_measurement: "index"
+  - sensor:
+      unique_id: ghytujtu435
+      name: mould_risk_vind
+      command: 'python3 /config/python_scripts/mindex.py {{ states("sensor.vinden_temperatur")|float }} {{ states("sensor.vinden_luftfuktighet")|float }}'
+      unit_of_measurement: "index"
 
+notify:
+  - platform: file
+    name: pn_log
+    filename: pn.log
 
 ##########################################
 # Links to individual configuration files

@@ -70,7 +70,7 @@ automation:
               notification_id: unavailable_entities
               title: "Otillgängliga entities"
               message: "{{ state_attr('sensor.unavailable_entities','entity_id')|join('\n') }}"
-          - service: notify.mobile_app_iphone
+          - service: notify.mobile_app_iphone_15
             data:
               title: Otillgängliga entities
               message: "{{ state_attr('sensor.unavailable_entities','entity_id')|join('\n') }}"

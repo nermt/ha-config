@@ -45,3 +45,26 @@ command_line:
       scan_interval: 60
       value_template: '{{ value }}'
       device_class: 'problem'
+
+template:
+  - sensor:
+      - unique_id: unavailable_websites
+        icon: "{{ iif(states(this.entity_id)|int(-1) > 0,'mdi:alert-circle','mdi:check-circle') }}"
+        state_class: measurement
+        unit_of_measurement: entities
+        state: >
+          {% set entities = state_attr(this.entity_id,'entity_id') %}
+          {{ entities|count if entities != none else none }}
+        attributes:
+          entity_id: >
+            {% set website_responses = [
+              states.sensor.ipa_http_response_code,
+              states.sensor.unifi_http_response_code,
+              states.sensor.nextcloud_http_response_code
+            ] %}
+            
+            {% set ignore_seconds = 30 %}
+            {% set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+            
+            {% set problem_websites = website_responses | selectattr('state','ne','200') | list %}
+            {{ website_responses | selectattr('state','ne','200') | list }}

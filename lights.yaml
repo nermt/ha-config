@@ -11,10 +11,6 @@
     entity_id: switch.sonoff3
   
   - platform: switch
-    name: Renhorn
-    entity_id: switch.sonoff4
-    
-  - platform: switch
     name: Groventré
     entity_id: switch.groventre
 

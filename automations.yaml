@@ -88,7 +88,7 @@
     to:
   condition: []
   action:
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       title: Förändrat mögelindex Krypgrund
       message: '{{ states.sensor.template_mould_text_krypgrund.state }}'
@@ -103,7 +103,7 @@
     to:
   condition: []
   action:
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       title: Förändrat mögelindex Vind
       message: '{{ states.sensor.template_mould_text_vind.state }}'
@@ -146,15 +146,10 @@
       seconds: 0
   condition: []
   action:
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       message: Pumpen har varit igång i 20 min.
       title: Bevattningspump
-      data:
-        actions:
-        - action: TURN_OFF_PUMP
-          title: Stäng av
-          icon: sfsymbols:poweroff
   - service: notify.mobile_app_linnea_iphone
     data:
       message: Pumpen har varit igång i 20 min.
@@ -175,7 +170,7 @@
       actionName: TURN_OFF_PUMP
   condition: []
   action:
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       message: Stänger av bevattningspump
   - service: switch.turn_off
@@ -198,7 +193,7 @@
       seconds: 0
   condition: []
   action:
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       message: Pumpen har varit igång i 40 min.
       title: Bevattningspump
@@ -308,7 +303,7 @@
     below: 100
   condition: []
   action:
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       message: Ingen inspänning till UPS
       title: Strömavbrott
@@ -316,21 +311,6 @@
     data:
       message: Ingen inspänning till UPS
       title: Strömavbrott
-  mode: single
-- id: '1696842115957'
-  alias: Uppdatera tid för senast ändrade höns temp
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - sensor.honshuset_temperatur_2
-  condition: []
-  action:
-  - service: input_datetime.set_datetime
-    data:
-      datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
-    target:
-      entity_id: input_datetime.senast_uppdaterad_temperatur_honshus
   mode: single
 - id: '1697649932092'
   alias: Larma vid vatten under diskbänk
@@ -347,7 +327,7 @@
       seconds: 0
   condition: []
   action:
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       title: Vattenlarm
       message: Vatten under diskbänken
@@ -357,7 +337,7 @@
       title: Vattenlarm
   mode: single
 - id: '1698351799743'
-  alias: Tänd hos hönsen 07:00
+  alias: Tänd hos hönsen morgon
   description: ''
   trigger:
   - platform: time
@@ -367,7 +347,9 @@
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.meross1_lampa
+      entity_id:
+      - switch.meross1_lampa
+      - switch.honsen_dual_outlet_outdoor_switch_uttag_1
   mode: single
 - id: '1698736019247'
   alias: Starta Nextcloud VM när cifs startat
@@ -406,7 +388,8 @@
   - service: switch.turn_off
     data: {}
     target:
-      entity_id: switch.meross1_lampa
+      entity_id:
+      - switch.meross1_lampa
   mode: single
 - id: '1700394061972'
   alias: Notifiera när utomhussensorn blir otillgänglig
@@ -427,7 +410,7 @@
     data:
       message: Tappade kontakten med Netatmo utomhussensor
       title: Otillgänglig sensor
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       message: Tappade kontakten med Netatmo utomhussensor
       title: Otillgänglig sensor
@@ -444,7 +427,7 @@
   - condition: template
     value_template: '{{states(''sensor.cloud_familjenekdahl_com'') != states(''sensor.myip'')}}'
   action:
-  - service: notify.mobile_app_iphone
+  - service: notify.mobile_app_iphone_15
     data:
       message: Publik IP och cloud.familjenekdahl.com stämmer inte överens.
       title: DNS problem
@@ -503,3 +486,32 @@
         data: {}
         target:
           entity_id: light.vardagsrumsfonster
+- id: '1702492022726'
+  alias: Släck hönsgård 18:30
+  description: ''
+  trigger:
+  - platform: time
+    at: '18:30:00'
+  condition: []
+  action:
+  - service: light.turn_off
+    target:
+      entity_id: light.honsgard
+    data: {}
+  mode: single
+- id: '64564645'
+  alias: persistent_notification_log
+  trigger:
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: persistent_notification
+      service: create
+  action:
+  - service: notify.pn_log
+    data_template:
+      message: '{{ now().strftime(''%Y%m%d %H%M%S'') }}  {{ trigger.event.data.service_data.title
+        }} /  {{ trigger.event.data.service_data.message }}
+
+        '
+  mode: single

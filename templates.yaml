@@ -205,12 +205,12 @@
       #     ] %}
       #     {{ mogel_index[int(states('sensor.mould_risk_krypgrund'))] }}
 
-      # - unique_id: mould_text_vind
-      #   state: >
-      #     {% set mogel_index = [
-      #       "ingen risk för mögel",
-      #       "möjlig efter mer än 8 veckor",
-      #       "efter 4-8 veckor",
-      #       "inom 4 veckor"
-      #     ] %}
-      #     {{ mogel_index[int(states('sensor.mould_risk_vind'))] }}
+      - unique_id: mould_text_vind
+        state: >
+          {% set mogel_index = [
+            "ingen risk för mögel",
+            "möjlig efter mer än 8 veckor",
+            "efter 4-8 veckor",
+            "inom 4 veckor"
+          ] %}
+          {{ mogel_index[int(states('sensor.mould_risk_vind'))] }}
