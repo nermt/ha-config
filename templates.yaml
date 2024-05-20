@@ -18,6 +18,8 @@
               {{ strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ months[now().month-1] }}
             {% endif %}
             </b></font>
+          weather_condition: >
+            
           greet: >
             <b>
             {% set time = now().hour %}
@@ -112,8 +114,8 @@
             {% endif %}
           weather: >
             {% set temperature = states('sensor.banedal_outside_temperature') %}
-            {% set forecasts = state_attr('weather.smhi_home', 'forecast') %}
-            {% set precip = forecasts[0].precipitation %}
+            {% set forecasts = state_attr('weather.smhi_home', 'forecast') %}            
+            {% set precip = states('sensor.precipitation_forecast_today') %}
             {% if not is_state('sensor.banedal_outside_temperature', 'unknown') %}              
               Det är {{ temperature }}°C ute
               {% if precip | float(default=0) > 0 %}
@@ -122,7 +124,37 @@
                 {% else %}
                   Risk för {{ precip }} mm regn
                 {% endif %}
-              {% endif %}  
+              {% endif %} 
+              {% set entity_id = 'sensor.condition_forecast_today' %}
+              {% if is_state(entity_id, 'sunny') %}
+                {{'\U0001F31E'}}
+              {% elif is_state(entity_id, 'clear-night') %}
+                {{'\U0001F319'}}
+              {% elif is_state(entity_id, 'cloudy') %}
+                {{'\U00002601'}}
+              {% elif is_state(entity_id, 'fog') %}
+                {{'\U0001F32B'}}
+              {% elif is_state(entity_id, 'hail') %}
+                {{'\U00002614'}}
+              {% elif is_state(entity_id, '‘lightning’') %}
+                {{'\U000026A1'}}
+              {% elif is_state(entity_id, 'lightning-rainy') %}
+                {{'\U000026C8'}}
+              {% elif is_state(entity_id, '‘partlycloudy’') %}
+                {{'\U000026C5'}}
+              {% elif is_state(entity_id, '‘pouring’') %}
+                {{'\U00002614'}}
+              {% elif is_state(entity_id, '‘rainy’') %}
+                {{'\U00002614'}}
+              {% elif is_state(entity_id, '‘snowy’') %}
+                {{'\U0001F328'}} 
+              {% elif is_state(entity_id, 'snowy-rainy') %}
+                {{'\U00002614'}}
+              {% elif is_state(entity_id, 'windy') %}
+                {{'\U0001F32C'}} 
+              {% elif is_state(entity_id, 'windy-variant') %}
+                {{'\U0001F32C'}} 
+              {% endif %}              
             {% else %}
               Kan inte läsa in väderinformation...
             {% endif %}
@@ -214,3 +246,29 @@
             "inom 4 veckor"
           ] %}
           {{ mogel_index[int(states('sensor.mould_risk_vind'))] }}
+    
+
+  - trigger:
+      - platform: time_pattern
+        hours: /1
+        
+    action:
+      - service: weather.get_forecasts
+        data:
+          type: daily
+        target:
+          entity_id: weather.smhi_home
+        response_variable: daily
+    sensor:
+      - name: Temperature forecast today
+        unique_id: temperature_forecast_today
+        state: "{{ daily['weather.smhi_home'].forecast[0].temperature }}"
+        unit_of_measurement: °C
+      - name: Precipitation forecast today 
+        unique_id: precipitation_forecast_today
+        state: "{{ daily['weather.smhi_home'].forecast[0].precipitation }}"
+        unit_of_measurement: mm
+      - name: Condition forecast today
+        unique_id: condition_temperature_forecast_today
+        state: "{{ daily['weather.smhi_home'].forecast[0].condition }}"
+        

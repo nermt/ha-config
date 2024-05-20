@@ -23,7 +23,7 @@ template:
             {% set ignored = state_attr('group.ignored_unavailable_entities','entity_id') %}
             {% set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
             {% set entities = states
-                |rejectattr('domain','in',['button','event','group','input_button','input_text','scene','binary_sensor','number','person','automation'])
+                |rejectattr('domain','in',['button','stt','tts','conversation','select','update','event','group','input_button','input_text','scene','binary_sensor','number','person','automation'])
                 |rejectattr('entity_id','search','(brave|iphone)')
                 |rejectattr('entity_id','in',integration_entities('TrueNAS'))
                 |rejectattr('last_changed','ge',ignore_ts) %}
